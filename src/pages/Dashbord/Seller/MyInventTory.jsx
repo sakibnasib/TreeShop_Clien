@@ -1,6 +1,11 @@
+
 import PlantDataRow from '../../../components/Dashboard/TableRows/PlantDataRow'
 
+
+
 const MyInventory = () => {
+  
+
   return (
     <>
       <div className='container mx-auto px-4 sm:px-8'>
