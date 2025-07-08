@@ -3,15 +3,33 @@ import Heading from '../../components/Shared/Heading';
 import Container from '../../components/Shared/Container';
 import Button from '../../components/Shared/Button/Button';
 import PurchaseModal from '../../components/Modal/PurchaseModal';
-import { useLoaderData } from 'react-router';
+import { useParams } from 'react-router';
+import useAuth from '../../hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import LoadingSpinner from '../../components/Shared/LoadingSpinner';
 
 const PlantDetails = () => {
-  const plant=useLoaderData();
+ 
+  const {id}=useParams();
+  const {user}=useAuth()
+
+  const {data:plant,isLoading,refetch}=useQuery({
+  queryKey:['plant'],
+  queryFn:async ()=>{
+    const {data}=await axios(`${import.meta.env.VITE_API_URL}/plant/${id}`)
+    return data
+  }
+ 
+})
   const {name,category,description,price,quantity,imageUrl,seller}=plant || {}
     let [isOpen, setIsOpen] = useState(false)
-
+    
   const closeModal = () => {
     setIsOpen(false)
+  }
+  if(isLoading){
+    return <LoadingSpinner/>
   }
     return (
         <Container>
@@ -80,12 +98,20 @@ const PlantDetails = () => {
           <div className='flex justify-between'>
             <p className='font-bold text-3xl text-gray-500'>Price: {price}$</p>
             <div>
-              <Button onClick={() => setIsOpen(true)} label='Purchase' />
+              <Button
+              disabled={!user}
+               onClick={() => setIsOpen(true)}
+                label={user ? 'Purchase': "ogin to purchase"} />
             </div>
           </div>
           <hr className='my-6' />
 
-          <PurchaseModal plant={plant} closeModal={closeModal} isOpen={isOpen} />
+          <PurchaseModal plant={plant} 
+           closeModal={closeModal}
+            isOpen={isOpen}
+             refetch={refetch}
+            />
+         
         </div>
       </div>
     </Container>

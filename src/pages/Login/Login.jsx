@@ -1,11 +1,12 @@
 import React from 'react';
 import LoadingSpinner from '../../components/Shared/LoadingSpinner';
 import toast from 'react-hot-toast';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router';
 
 import { TbFidgetSpinner } from 'react-icons/tb'
 import { FcGoogle } from 'react-icons/fc'
 import useAuth from '../../hooks/useAuth';
+import { saveUserDB } from '../../api/utils';
 const Login = () => {
     const { signIn, signInWithGoogle, loading, user } =useAuth()
   const navigate = useNavigate()
@@ -23,7 +24,14 @@ const Login = () => {
 
     try {
       //User Login
-      await signIn(email, password)
+    const result=  await signIn(email, password)
+    const userData={
+       name: result?.user?.displayName,
+        email: result?.user?.email,
+        image: result?.user?.photoURL,
+    };
+    // save DB
+    await saveUserDB( userData)
 
       navigate(from, { replace: true })
       toast.success('Login Successful')
@@ -36,7 +44,17 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     try {
       //User Registration using google
-      await signInWithGoogle()
+    const result=  await signInWithGoogle()
+
+     //User Registration using google
+      const userData = {
+        name: result?.user?.displayName,
+        email: result?.user?.email,
+        image: result?.user?.photoURL,
+      };
+
+      // save inDB
+      await saveUserDB(userData)
       navigate(from, { replace: true })
       toast.success('Login Successful')
     } catch (err) {

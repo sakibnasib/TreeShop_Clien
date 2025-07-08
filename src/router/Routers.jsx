@@ -25,8 +25,8 @@ import LoadingSpinner from "../components/Shared/LoadingSpinner";
           hydrateFallbackElement:<LoadingSpinner/>
         },
         {path:'/plant/:id',Component:PlantDetails,
-          loader:({params})=>fetch(`${import.meta.env.VITE_API_URL}/plant/${params.id}`),
-           hydrateFallbackElement:<LoadingSpinner/>
+          // loader:({params})=>fetch(`${import.meta.env.VITE_API_URL}/plant/${params.id}`),
+          //  hydrateFallbackElement:<LoadingSpinner/>
         }
     ]
 },

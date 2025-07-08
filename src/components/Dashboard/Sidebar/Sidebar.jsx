@@ -12,14 +12,18 @@ import CustomerMenu from './Menu/CustomerMenu'
 import SellerMenu from './Menu/SellerMenu'
 import MenuItem from './Menu/MenuItem'
 import AdminMenu from './Menu/AdminMenu'
+import useRole from '../../../hooks/useRole'
+import LoadingSpinner from '../../Shared/LoadingSpinner'
 const Sidebar = () => {
   const { logOut } = useAuth()
-  const [isActive, setActive] = useState(false)
+  const [isActive, setActive] = useState(false);
+  const [role, isRoleLoading] = useRole()
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
     setActive(!isActive)
   }
+   if (isRoleLoading) return <LoadingSpinner />
   return (
     <>
       {/* Small Screen Navbar */}
@@ -71,15 +75,16 @@ const Sidebar = () => {
           <div className='flex flex-col justify-between flex-1 mt-6'>
             <nav>
               {/*  Menu Items */}
-              <CustomerMenu />
-              <SellerMenu />
-
+                {role === 'customer' && <CustomerMenu />}
+   {role === 'seller' && <SellerMenu />}           
+             
+ {role === 'admin' && <AdminMenu />}
               <MenuItem
                 icon={BsGraphUp}
                 label='Statistics'
                 address='/dashboard'
               />
-              <AdminMenu />
+             
             </nav>
           </div>
         </div>
